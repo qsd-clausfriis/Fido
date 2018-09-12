@@ -207,79 +207,14 @@ namespace Fido_Main.Director.Director_Helper
         {
           case "landesk":
 
-            //this is a hack needed to reformat the srcip if Landesk is used
-            //because landesk stores IPs in 000.000.000.000 format Where each
-            //octet needs 3 numbers.
-            if ((sNewSource.ToLower() == "landesk") && (!String.IsNullOrEmpty(sSrcIP)))
-            {
-              sLandeskSrcIP = SysmgmtLandesk.FormatIP(sSrcIP);
-            }
+            sLandeskSrcIP = SourceLandesk(ref lFidoReturnValues, sSrcIP, sHostname, sNewSource, sLandeskSrcIP, source, lHostInfo);
 
-
-            //if nmap or ssh is null
-            if (String.IsNullOrEmpty(sHostname))
-            {
-              lQuery = SQL_Queries.GetSqlConfigs(source);
-              lHostInfo.AddRange(SQL_Queries.RunMSsqlQuery(lQuery, sLandeskSrcIP, null));
-            }
-            else
-            {
-              lQuery = SQL_Queries.GetSqlConfigs(source);
-              lHostInfo.AddRange(SQL_Queries.RunMSsqlQuery(lQuery, null, sHostname));
-            }
-
-            //if return has values assign to lFidoReturnValues
-            if (lHostInfo[0] != "unknown")
-            {
-              lFidoReturnValues.Hostname = lHostInfo[0];
-              if (lFidoReturnValues.Landesk == null)
-              {
-                lFidoReturnValues.Landesk = new LandeskReturnValues();
-              }
-
-              //format return from Landesk to Fido object
-              lFidoReturnValues = Landesk2FidoValues.LandesklFidoValues(lFidoReturnValues, lHostInfo);
-
-              //query Landesk to get more system information
-              lFidoReturnValues = SysmgmtLandesk.GetHostOsInfo(lFidoReturnValues, lQuery[0]);
-
-              //query to get total # of vulns for the machine
-              lFidoReturnValues.Landesk.Patches = SysmgmtLandesk.GetVulns(lFidoReturnValues.Hostname, lQuery[0]);
-
-              //query to get if Bit9 was installed\
-              if (lFidoReturnValues.Bit9 == null)
-              {
-                lFidoReturnValues.Bit9 = new Bit9ReturnValues();
-              }
-              lFidoReturnValues.Bit9.IsBit9 = IsBit9Installed();
-              lFidoReturnValues = SysmgmtLandesk.GetBit9Status(lFidoReturnValues, lQuery[0]);
-              if (lFidoReturnValues.Landesk.Bit9Running == null)
-              {
-                lFidoReturnValues.Landesk.Bit9Running = String.Empty;
-              }
-              if (lFidoReturnValues.Landesk.Bit9Version == null)
-              {
-                lFidoReturnValues.Landesk.Bit9Version = String.Empty;
-              }
-
-            }
-
-            continue;
+              continue;
 
           case "jamf":
 
             //if nmap or ssh is null use IP
-            if (String.IsNullOrEmpty(sHostname))
-            {
-              lQuery = SQL_Queries.GetSqlConfigs(source);
-              lHostInfo.AddRange(SQL_Queries.RunMysqlQuery(lQuery, sSrcIP, null));
-            }
-            //if hostname is not null use IP instead
-            else
-            {
-              lQuery = SQL_Queries.GetSqlConfigs(source);
-              lHostInfo.AddRange(SQL_Queries.RunMysqlQuery(lQuery, null, sHostname));
-            }
+            SetHostInfo(sHostname, sSrcIP, source, lHostInfo);
 
             //if return has values assign to lFidoReturnValues
             if (lHostInfo[0] != "unknown")
@@ -313,7 +248,86 @@ namespace Fido_Main.Director.Director_Helper
       return lFidoReturnValues;
     }
 
-    private static DateTime? FromEpochTime(string unixTime)
+      private static string SourceLandesk(ref FidoReturnValues lFidoReturnValues, string sSrcIP, string sHostname,
+          string sNewSource, string sLandeskSrcIP, string source, List<string> lHostInfo)
+      {
+          List<string> lQuery;
+          //this is a hack needed to reformat the srcip if Landesk is used
+          //because landesk stores IPs in 000.000.000.000 format Where each
+          //octet needs 3 numbers.
+          if ((sNewSource.ToLower() == "landesk") && (!String.IsNullOrEmpty(sSrcIP)))
+          {
+              sLandeskSrcIP = SysmgmtLandesk.FormatIP(sSrcIP);
+          }
+
+
+          lQuery = SetHostInfo(sHostname, sLandeskSrcIP, source, lHostInfo);
+
+          //if return has values assign to lFidoReturnValues
+          if (lHostInfo[0] != "unknown")
+          {
+              lFidoReturnValues.Hostname = lHostInfo[0];
+              if (lFidoReturnValues.Landesk == null)
+              {
+                  lFidoReturnValues.Landesk = new LandeskReturnValues();
+              }
+
+              //format return from Landesk to Fido object
+              lFidoReturnValues = Landesk2FidoValues.LandesklFidoValues(lFidoReturnValues, lHostInfo);
+
+              //query Landesk to get more system information
+              lFidoReturnValues = SysmgmtLandesk.GetHostOsInfo(lFidoReturnValues, lQuery[0]);
+
+              //query to get total # of vulns for the machine
+              lFidoReturnValues.Landesk.Patches = SysmgmtLandesk.GetVulns(lFidoReturnValues.Hostname, lQuery[0]);
+
+              CheckBit9(ref lFidoReturnValues, lQuery);
+          }
+
+          return sLandeskSrcIP;
+      }
+
+      private static void CheckBit9(ref FidoReturnValues lFidoReturnValues, List<string> lQuery)
+      {
+          //query to get if Bit9 was installed\
+          if (lFidoReturnValues.Bit9 == null)
+          {
+              lFidoReturnValues.Bit9 = new Bit9ReturnValues();
+          }
+
+          lFidoReturnValues.Bit9.IsBit9 = IsBit9Installed();
+          lFidoReturnValues = SysmgmtLandesk.GetBit9Status(lFidoReturnValues, lQuery[0]);
+          if (lFidoReturnValues.Landesk.Bit9Running == null)
+          {
+              lFidoReturnValues.Landesk.Bit9Running = String.Empty;
+          }
+
+          if (lFidoReturnValues.Landesk.Bit9Version == null)
+          {
+              lFidoReturnValues.Landesk.Bit9Version = String.Empty;
+          }
+      }
+
+      private static List<string> SetHostInfo(string sHostname, string sLandeskSrcIP, string source, List<string> lHostInfo)
+      {
+          List<string> lQuery;
+
+          //if nmap or ssh is null
+          if (String.IsNullOrEmpty(sHostname))
+          {
+              lQuery = SQL_Queries.GetSqlConfigs(source);
+              lHostInfo.AddRange(SQL_Queries.RunMSsqlQuery(lQuery, sLandeskSrcIP, null));
+          }
+          else
+          {
+              lQuery = SQL_Queries.GetSqlConfigs(source);
+              lHostInfo.AddRange(SQL_Queries.RunMSsqlQuery(lQuery, null, sHostname));
+          }
+
+          return lQuery;
+      }
+
+      private static DateTime? FromEpochTime(string unixTime)
     {
       return new DateTime(1970, 1, 1, 0, 0, 0).AddMilliseconds(Convert.ToDouble(unixTime));
     }
