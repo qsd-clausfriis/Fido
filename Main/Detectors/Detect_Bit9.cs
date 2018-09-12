@@ -176,21 +176,8 @@ namespace Fido_Main.Main.Detectors
           //todo: SQL injection. Store query in database and fill variables when retrieving
           foreach (var CMD in lFileHash.Select(sFileHash => "SELECT * FROM [das].[dbo].[Fido_FileInstanceInfo] WHERE MD5 = '" + sFileHash + "'").Select(sQuery => new SqlCommand(sQuery, vConnection)))
           {
-            CMD.CommandType = CommandType.Text;
-            vConnection.Open();
-            using (var objReader = CMD.ExecuteReader())
-            {
-              if (objReader.HasRows)
-              {
-                while (objReader.Read())
-                {
-                  var quant = objReader.GetSqlValues(oBit9Return);
-                  if (!oBit9Return.Any()) continue;
-                  lBit9Info.AddRange(oBit9Return.Select(item => item.ToString()));
-                }
-              }
-            }
-            vConnection.Close();
+              CMD.CommandType = CommandType.Text;
+              ReadBit9Info(vConnection, CMD, oBit9Return, lBit9Info);
           }
         }
         else if (lBit9ReturnValues != null)
@@ -198,20 +185,7 @@ namespace Fido_Main.Main.Detectors
           //todo: SQL injection. Store query in database and fill values when retrieving
           var sQuery = "SELECT * FROM [das].[dbo].[Fido_FileInstanceInfo] WHERE FILE_NAME = '" + lBit9ReturnValues.FileName.ToLower() + "' AND Path_Name = '" + lBit9ReturnValues.FilePath.ToLower() + "' AND Computer_Name = '" + lBit9ReturnValues.HostName + "'";
           var CMD = new SqlCommand(sQuery, vConnection) {CommandType = CommandType.Text};
-          vConnection.Open();
-          using (var objReader = CMD.ExecuteReader())
-          {
-            if (objReader.HasRows)
-            {
-              while (objReader.Read())
-              {
-                var quant = objReader.GetSqlValues(oBit9Return);
-                if (!oBit9Return.Any()) continue;
-                lBit9Info.AddRange(oBit9Return.Select(item => item.ToString()));
-              }
-            }
-          }
-          vConnection.Close();
+          ReadBit9Info(vConnection, CMD, oBit9Return, lBit9Info);
         }
 
         //if no count then no hash information exists
@@ -227,7 +201,26 @@ namespace Fido_Main.Main.Detectors
       return lBit9Info;
     }
 
-    //get the specific machines events which happened on the computer... going back 2hrs.
+      private static void ReadBit9Info(SqlConnection vConnection, object CMD, object[] oBit9Return, List<string> lBit9Info)
+      {
+          vConnection.Open();
+          using (var objReader = CMD.ExecuteReader())
+          {
+              if (objReader.HasRows)
+              {
+                  while (objReader.Read())
+                  {
+                      var quant = objReader.GetSqlValues(oBit9Return);
+                      if (!oBit9Return.Any()) continue;
+                      lBit9Info.AddRange(oBit9Return.Select(item => item.ToString()));
+                  }
+              }
+          }
+
+          vConnection.Close();
+      }
+
+      //get the specific machines events which happened on the computer... going back 2hrs.
     public static List<string> GetMachineEvents()
     {
       //todo: build this method out
