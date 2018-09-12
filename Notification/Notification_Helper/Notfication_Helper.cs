@@ -27,7 +27,7 @@ namespace Fido_Main.Notification.Notification_Helper
 {
   static class Notfication_Helper
   {
-    public static Dictionary<string, string> StartReplacements(FidoReturnValues lFidoReturnValues, string[] detectors, List<string> lBadMD5Hashes, List<string> lGoodMD5Hashes, List<string> lBadURLs, List<string> lGoodURLs, Dictionary<string, string> replacements)
+    public static Dictionary<string, string> StartReplacements(FidoReturnValues lFidoReturnValues, string[] detectors, MD5Hashes md5Hashes, URLs urls, Dictionary<string, string> replacements)
     {
       try
       {
@@ -39,8 +39,8 @@ namespace Fido_Main.Notification.Notification_Helper
             case "cyphortv2":
               if (lFidoReturnValues.Cyphort != null)
               {
-                replacements = Notification_Cyphort_Helper.CyphortBadGuyReturn(lFidoReturnValues, lBadMD5Hashes, lGoodMD5Hashes, lBadURLs, lGoodURLs, replacements);
-                replacements = VTReplacements(lFidoReturnValues, lBadMD5Hashes, lGoodMD5Hashes, lBadURLs, lGoodURLs, replacements);
+                replacements = Notification_Cyphort_Helper.CyphortBadGuyReturn(lFidoReturnValues, md5Hashes, urls, replacements);
+                replacements = VTReplacements(lFidoReturnValues, md5Hashes, urls, replacements);
               }
 
               break;
@@ -48,8 +48,8 @@ namespace Fido_Main.Notification.Notification_Helper
             case "cyphortv3":
               if (lFidoReturnValues.Cyphort != null)
               {
-                replacements = Notification_Cyphort_Helper.CyphortBadGuyReturn(lFidoReturnValues, lBadMD5Hashes, lGoodMD5Hashes, lBadURLs, lGoodURLs, replacements);
-                replacements = VTReplacements(lFidoReturnValues, lBadMD5Hashes, lGoodMD5Hashes, lBadURLs, lGoodURLs, replacements);
+                replacements = Notification_Cyphort_Helper.CyphortBadGuyReturn(lFidoReturnValues, md5Hashes, urls, replacements);
+                replacements = VTReplacements(lFidoReturnValues, md5Hashes, urls, replacements);
               }
 
               break;
@@ -57,8 +57,8 @@ namespace Fido_Main.Notification.Notification_Helper
             case "protectwisev1-event":
               if (lFidoReturnValues.ProtectWise != null)
               {
-                replacements = Notfication_ProtectWise_Helper.ProtectWiseBadGuyReturn(lFidoReturnValues, lBadMD5Hashes, lGoodMD5Hashes, lBadURLs, lGoodURLs, replacements);
-                replacements = VTReplacements(lFidoReturnValues, lBadMD5Hashes, lGoodMD5Hashes, lBadURLs, lGoodURLs, replacements);
+                replacements = Notfication_ProtectWise_Helper.ProtectWiseBadGuyReturn(lFidoReturnValues, md5Hashes, urls, replacements);
+                replacements = VTReplacements(lFidoReturnValues, md5Hashes, urls, replacements);
               }
 
               break;
@@ -66,16 +66,16 @@ namespace Fido_Main.Notification.Notification_Helper
             case "carbonblackv1":
               if (lFidoReturnValues.CB.Alert != null)
               {
-                replacements = Notification_CarbonBlack_Helper.CarbonBlackBadGuyReturn(lFidoReturnValues, lBadMD5Hashes, lGoodMD5Hashes, lBadURLs, lGoodURLs, replacements);
-                replacements = VTReplacements(lFidoReturnValues, lBadMD5Hashes, lGoodMD5Hashes, lBadURLs, lGoodURLs, replacements);
+                replacements = Notification_CarbonBlack_Helper.CarbonBlackBadGuyReturn(lFidoReturnValues, md5Hashes, urls, replacements);
+                replacements = VTReplacements(lFidoReturnValues, md5Hashes, urls, replacements);
               }
               break;
 
             case "panv1":
               if (lFidoReturnValues.PaloAlto != null)
               {
-                replacements = Notification_PaloAlto_Helper.PaloAltoBadGuyReturn(lFidoReturnValues, lBadMD5Hashes, lGoodMD5Hashes, lBadURLs, lGoodURLs, replacements);
-                replacements = VTReplacements(lFidoReturnValues, lBadMD5Hashes, lGoodMD5Hashes, lBadURLs, lGoodURLs, replacements);
+                replacements = Notification_PaloAlto_Helper.PaloAltoBadGuyReturn(lFidoReturnValues, md5Hashes, urls, replacements);
+                replacements = VTReplacements(lFidoReturnValues, md5Hashes, urls, replacements);
               }
               break;
 
@@ -84,8 +84,8 @@ namespace Fido_Main.Notification.Notification_Helper
               //Check Virustotal for values
               if (lFidoReturnValues.FireEye != null)
               {
-                replacements = MPSBadGuyReturn(lFidoReturnValues, lBadMD5Hashes, lGoodMD5Hashes, lBadURLs, lGoodURLs, replacements);
-                replacements = VTReplacements(lFidoReturnValues, lBadMD5Hashes, lGoodMD5Hashes, lBadURLs, lGoodURLs, replacements);
+                replacements = MPSBadGuyReturn(lFidoReturnValues, md5Hashes, urls, replacements);
+                replacements = VTReplacements(lFidoReturnValues, md5Hashes, urls, replacements);
               }
 
               break;
@@ -103,11 +103,11 @@ namespace Fido_Main.Notification.Notification_Helper
                 if (lFidoReturnValues.Bit9.VTReport[0].Positives > 0)
                 {
                   lFidoReturnValues.BadHashs += 1;
-                  lBadMD5Hashes.Add(lFidoReturnValues.Bit9.VTReport[0].Permalink);
+                  md5Hashes.lBadMD5Hashes.Add(lFidoReturnValues.Bit9.VTReport[0].Permalink);
                 }
                 else
                 {
-                  lGoodMD5Hashes.Add(lFidoReturnValues.Bit9.VTReport[0].Permalink);
+                  md5Hashes.lGoodMD5Hashes.Add(lFidoReturnValues.Bit9.VTReport[0].Permalink);
                 }
 
                 //Check Bit9 for values
@@ -151,7 +151,7 @@ namespace Fido_Main.Notification.Notification_Helper
       return replacements;
     }
 
-    private static Dictionary<string, string> MPSBadGuyReturn(FidoReturnValues lFidoReturnValues, List<string> lBadMD5Hashes, List<string> lGoodMD5Hashes, List<string> lBadURLs, List<string> lGoodURLs, Dictionary<string, string> replacements)
+    private static Dictionary<string, string> MPSBadGuyReturn(FidoReturnValues lFidoReturnValues, MD5Hashes md5Hashes, URLs urls, Dictionary<string, string> replacements)
     {
       if (lFidoReturnValues.FireEye.VirusTotal != null)
       {
@@ -162,11 +162,11 @@ namespace Fido_Main.Notification.Notification_Helper
             if (lFidoReturnValues.FireEye.VirusTotal.MD5HashReturn[i].Positives > 0)
             {
               lFidoReturnValues.BadHashs += 1;
-              lBadMD5Hashes.Add(lFidoReturnValues.FireEye.VirusTotal.MD5HashReturn[i].Permalink);
+              md5Hashes.lBadMD5Hashes.Add(lFidoReturnValues.FireEye.VirusTotal.MD5HashReturn[i].Permalink);
             }
             else
             {
-              lGoodMD5Hashes.Add(lFidoReturnValues.FireEye.VirusTotal.MD5HashReturn[i].Permalink);
+              md5Hashes.lGoodMD5Hashes.Add(lFidoReturnValues.FireEye.VirusTotal.MD5HashReturn[i].Permalink);
             }
           }
         }
@@ -177,11 +177,11 @@ namespace Fido_Main.Notification.Notification_Helper
           if (lFidoReturnValues.FireEye.VirusTotal.URLReturn[i].Positives > 0)
           {
             lFidoReturnValues.BadUrLs += 1;
-            lBadURLs.Add(lFidoReturnValues.FireEye.VirusTotal.URLReturn[i].Permalink);
+            urls.lBadURLs.Add(lFidoReturnValues.FireEye.VirusTotal.URLReturn[i].Permalink);
           }
           else
           {
-            lGoodURLs.Add(lFidoReturnValues.FireEye.VirusTotal.URLReturn[i].Permalink);
+            urls.lGoodURLs.Add(lFidoReturnValues.FireEye.VirusTotal.URLReturn[i].Permalink);
           }
         }
       }
@@ -281,12 +281,12 @@ namespace Fido_Main.Notification.Notification_Helper
       return replacements;
     }
 
-    private static Dictionary<string, string> VTReplacements(FidoReturnValues lFidoReturnValues, List<string> lBadMD5Hashes, List<string> lGoodMD5Hashes, List<string> lBadURLs, List<string> lGoodURLs, Dictionary<string, string> replacements)
-    {
+        private static Dictionary<string, string> VTReplacements(FidoReturnValues lFidoReturnValues, MD5Hashes md5Hashes, URLs urls, Dictionary<string, string> replacements)
+        {
 
-      if (lBadMD5Hashes.Count() == 1)
+      if (md5Hashes.lBadMD5Hashes.Count() == 1)
       {
-        replacements.Add("%totalbadfiles%", "<a href='" + lBadMD5Hashes[0] + "'>" + lFidoReturnValues.BadHashs.ToString(CultureInfo.InvariantCulture) + "</a>");
+        replacements.Add("%totalbadfiles%", "<a href='" + md5Hashes.lBadMD5Hashes[0] + "'>" + lFidoReturnValues.BadHashs.ToString(CultureInfo.InvariantCulture) + "</a>");
       }
       else if (lFidoReturnValues.BadHashs > 1)
       {
@@ -295,11 +295,11 @@ namespace Fido_Main.Notification.Notification_Helper
         {
           if (i == (lFidoReturnValues.BadHashs - 1))
           {
-            sBadReplacement += "<a href='" + lBadMD5Hashes[i] + "'>" + (i + 1).ToString(CultureInfo.InvariantCulture) + "</a>";
+            sBadReplacement += "<a href='" + md5Hashes.lBadMD5Hashes[i] + "'>" + (i + 1).ToString(CultureInfo.InvariantCulture) + "</a>";
           }
           else
           {
-            sBadReplacement += "<a href='" + lBadMD5Hashes[i] + "'>" + (i + 1).ToString(CultureInfo.InvariantCulture) + "</a>, ";
+            sBadReplacement += "<a href='" + md5Hashes.lBadMD5Hashes[i] + "'>" + (i + 1).ToString(CultureInfo.InvariantCulture) + "</a>, ";
           }
         }
         replacements.Add("%totalbadfiles%", sBadReplacement);
@@ -309,14 +309,14 @@ namespace Fido_Main.Notification.Notification_Helper
         replacements.Add("%totalbadfiles%", "0");
       }
 
-      if (lGoodMD5Hashes.Count() == 1)
+      if (md5Hashes.lGoodMD5Hashes.Count() == 1)
       {
-        replacements.Add("%totalgoodfiles%", "<a href='" + lGoodMD5Hashes[0] + "'>1</a>");
+        replacements.Add("%totalgoodfiles%", "<a href='" + md5Hashes.lGoodMD5Hashes[0] + "'>1</a>");
       }
-      else if (lGoodMD5Hashes.Count() > 1)
+      else if (md5Hashes.lGoodMD5Hashes.Count() > 1)
       {
         string sGoodReplacement;
-        sGoodReplacement = "<a href=''>1.." + lGoodMD5Hashes.Count + "</a>";
+        sGoodReplacement = "<a href=''>1.." + md5Hashes.lGoodMD5Hashes.Count + "</a>";
         replacements.Add("%totalgoodfiles%", sGoodReplacement);
       }
       else
@@ -324,22 +324,22 @@ namespace Fido_Main.Notification.Notification_Helper
         replacements.Add("%totalgoodfiles%", "0");
       }
 
-      if (lBadURLs.Count() == 1)
+      if (urls.lBadURLs.Count() == 1)
       {
-        replacements.Add("%totalbadurls%", "<a href='" + lBadURLs[0] + "'>1</a>");
+        replacements.Add("%totalbadurls%", "<a href='" + urls.lBadURLs[0] + "'>1</a>");
       }
       else if (lFidoReturnValues.BadUrLs > 1)
       {
         var sNewReplacement = string.Empty;
         for (var i = 0; i < lFidoReturnValues.BadUrLs -1; i++)
         {
-          if (i == (lBadURLs.Count() - 1))
+          if (i == (urls.lBadURLs.Count() - 1))
           {
-            sNewReplacement += "<a href='" + lBadURLs[i] + "'>" + (i + 1).ToString(CultureInfo.InvariantCulture) + "</a>";
+            sNewReplacement += "<a href='" + urls.lBadURLs[i] + "'>" + (i + 1).ToString(CultureInfo.InvariantCulture) + "</a>";
           }
           else
           {
-            sNewReplacement += "<a href='" + lBadURLs[i] + "'>" + (i + 1).ToString(CultureInfo.InvariantCulture) + "</a>, ";
+            sNewReplacement += "<a href='" + urls.lBadURLs[i] + "'>" + (i + 1).ToString(CultureInfo.InvariantCulture) + "</a>, ";
           }
         }
         replacements.Add("%totalbadurls%", sNewReplacement);
@@ -349,14 +349,14 @@ namespace Fido_Main.Notification.Notification_Helper
         replacements.Add("%totalbadurls%", "0");
       }
 
-      if (lGoodURLs.Count() == 1)
+      if (urls.lGoodURLs.Count() == 1)
       {
-        replacements.Add("%totalgoodurls%", "<a href='" + lGoodURLs[0] + "'>1</a>");
+        replacements.Add("%totalgoodurls%", "<a href='" + urls.lGoodURLs[0] + "'>1</a>");
       }
-      else if (lGoodURLs.Count() > 1)
+      else if (urls.lGoodURLs.Count() > 1)
       {
         var sGoodReplacement = string.Empty;
-        sGoodReplacement += "<a href=''>1.." + lGoodURLs.Count + "</a>";
+        sGoodReplacement += "<a href=''>1.." + urls.lGoodURLs.Count + "</a>";
         replacements.Add("%totalgoodurls%", sGoodReplacement);
       }
       else

@@ -26,7 +26,7 @@ namespace Fido_Main.Notification.Notification_Helper
   class Notification_PaloAlto_Helper
   {
 
-    public static Dictionary<string, string> PaloAltoBadGuyReturn(FidoReturnValues lFidoReturnValues, List<string> lBadMD5Hashes, List<string> lGoodMD5Hashes, List<string> lBadURLs, List<string> lGoodURLs, Dictionary<string, string> replacements)
+    public static Dictionary<string, string> PaloAltoBadGuyReturn(FidoReturnValues lFidoReturnValues, MD5Hashes md5Hashes, URLs urls, Dictionary<string, string> replacements)
     {
       if (lFidoReturnValues.PaloAlto.VirusTotal != null)
       {
@@ -37,11 +37,11 @@ namespace Fido_Main.Notification.Notification_Helper
             if (lFidoReturnValues.PaloAlto.VirusTotal.MD5HashReturn[i].Positives > 0)
             {
               lFidoReturnValues.BadHashs += 1;
-              lBadMD5Hashes.Add(lFidoReturnValues.PaloAlto.VirusTotal.MD5HashReturn[i].Permalink);
+              md5Hashes.lBadMD5Hashes.Add(lFidoReturnValues.PaloAlto.VirusTotal.MD5HashReturn[i].Permalink);
             }
             else
             {
-              lGoodMD5Hashes.Add(lFidoReturnValues.PaloAlto.VirusTotal.MD5HashReturn[i].Permalink);
+              md5Hashes.lGoodMD5Hashes.Add(lFidoReturnValues.PaloAlto.VirusTotal.MD5HashReturn[i].Permalink);
             }
           }
         }
@@ -53,11 +53,11 @@ namespace Fido_Main.Notification.Notification_Helper
             if (lFidoReturnValues.PaloAlto.VirusTotal.URLReturn[i].Positives > 0)
             {
               lFidoReturnValues.BadUrLs += 1;
-              lBadURLs.Add(lFidoReturnValues.PaloAlto.VirusTotal.URLReturn[i].Permalink);
+              urls.lBadURLs.Add(lFidoReturnValues.PaloAlto.VirusTotal.URLReturn[i].Permalink);
             }
             else
             {
-              lGoodURLs.Add(lFidoReturnValues.PaloAlto.VirusTotal.URLReturn[i].Permalink);
+              urls.lGoodURLs.Add(lFidoReturnValues.PaloAlto.VirusTotal.URLReturn[i].Permalink);
             }
           }
         }
