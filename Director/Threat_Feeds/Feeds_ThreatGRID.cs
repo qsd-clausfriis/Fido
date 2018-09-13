@@ -112,39 +112,7 @@ namespace Fido_Main.Director.Threat_Feeds
       return ThreatGRIDReturn;
     }
 
-    public static void ReportHTML(string sHash)
-    {
-      ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
-      var parseConfigs = Object_ThreatGRID_Configs.GetThreatGridConfigs("report-level");
-      var request = parseConfigs.ApiBaseUrl + parseConfigs.ApiFuncCall + sHash + "/report.html?" + parseConfigs.ApiQueryString + "&api_key=" + parseConfigs.ApiKey;
-      var alertRequest = (HttpWebRequest)WebRequest.Create(request);
-      alertRequest.Method = "GET";
-      try
-      {
-        using (var ThreatGRIDResponse = alertRequest.GetResponse() as HttpWebResponse)
-        {
-          if (ThreatGRIDResponse != null && ThreatGRIDResponse.StatusCode == HttpStatusCode.OK)
-          {
-            using (var respStream = ThreatGRIDResponse.GetResponseStream())
-            {
-              if (respStream == null) return;
-              //todo: move this to the DB
-              using (var file = File.Create(Environment.CurrentDirectory + @"\reports\threatgrid\" + sHash + ".html"))
-              {
-                respStream.CopyTo(file);
-              }
-              ThreatGRIDResponse.Close();
-            }
-          }
-        }
-      }
-      catch (Exception e)
-      {
-        Fido_EventHandler.SendEmail("Fido Error", "Fido Failed: {0} Exception caught downloading ThreatGRID report information:" + e);
-      }
-    }
-
-    public static Object_ThreatGRID_IP_ConfigClass.ThreatGRID_IP_HLInfo HlInfo(string sIP)
+      public static Object_ThreatGRID_IP_ConfigClass.ThreatGRID_IP_HLInfo HlInfo(string sIP)
     {
       Console.WriteLine(@"Gathering ThreatGRID IP information.");
       ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;

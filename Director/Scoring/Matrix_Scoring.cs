@@ -204,7 +204,7 @@ namespace Fido_Main.Director.Scoring
 
             if (lFidoReturnValues.Cyphort.ThreatGRID.IPSearch.Data.Items.Any())
             {
-              Feeds_ThreatGRID.ReportHTML(lFidoReturnValues.Cyphort.ThreatGRID.IPSearch.Data.Items[0].HashID);
+              Feeds_ReportHTML.ReportHTML(lFidoReturnValues.Cyphort.ThreatGRID.IPSearch.Data.Items[0].HashID);
             }
 
             Console.WriteLine(@"Scoring Cyphort/ThreatGRID detector IP information.");
@@ -233,7 +233,7 @@ namespace Fido_Main.Director.Scoring
 
             if (lFidoReturnValues.Cyphort.ThreatGRID.HashSearch.Data.Items.Any())
             {
-              Feeds_ThreatGRID.ReportHTML(lFidoReturnValues.Cyphort.ThreatGRID.HashSearch.Data.Items[0].HashID);
+              Feeds_ReportHTML.ReportHTML(lFidoReturnValues.Cyphort.ThreatGRID.HashSearch.Data.Items[0].HashID);
             }
 
             Console.WriteLine(@"Scoring Cyphort/ThreatGRID detector IP information.");
@@ -313,7 +313,7 @@ namespace Fido_Main.Director.Scoring
 
             if (lFidoReturnValues.ProtectWise.ThreatGRID.IPSearch.Data.Items.Any())
             {
-              Feeds_ThreatGRID.ReportHTML(lFidoReturnValues.ProtectWise.ThreatGRID.IPSearch.Data.Items[0].HashID);
+              Feeds_ReportHTML.ReportHTML(lFidoReturnValues.ProtectWise.ThreatGRID.IPSearch.Data.Items[0].HashID);
             }
 
             Console.WriteLine(@"Scoring ProtectWise/ThreatGRID detector IP information.");
@@ -342,7 +342,7 @@ namespace Fido_Main.Director.Scoring
 
             if (lFidoReturnValues.ProtectWise.ThreatGRID.HashSearch.Data.Items.Any())
             {
-              Feeds_ThreatGRID.ReportHTML(lFidoReturnValues.ProtectWise.ThreatGRID.HashSearch.Data.Items[0].HashID);
+              Feeds_ReportHTML.ReportHTML(lFidoReturnValues.ProtectWise.ThreatGRID.HashSearch.Data.Items[0].HashID);
             }
 
             Console.WriteLine(@"Scoring ProtectWise/ThreatGRID detector IP information.");
@@ -394,7 +394,7 @@ namespace Fido_Main.Director.Scoring
 
             if (lFidoReturnValues.CB.Alert.ThreatGRID.HashSearch.Data.Items.Any())
             {
-              Feeds_ThreatGRID.ReportHTML(lFidoReturnValues.CB.Alert.ThreatGRID.HashSearch.Data.Items[0].HashID);
+              Feeds_ReportHTML.ReportHTML(lFidoReturnValues.CB.Alert.ThreatGRID.HashSearch.Data.Items[0].HashID);
             }
 
             Console.WriteLine(@"Scoring Carbon Black/ThreatGRID detector IP information.");
@@ -463,7 +463,7 @@ namespace Fido_Main.Director.Scoring
 
             if (lFidoReturnValues.PaloAlto.ThreatGRID.IPSearch.Data.Items.Any())
             {
-              Feeds_ThreatGRID.ReportHTML(lFidoReturnValues.PaloAlto.ThreatGRID.IPSearch.Data.Items[0].HashID);
+              Feeds_ReportHTML.ReportHTML(lFidoReturnValues.PaloAlto.ThreatGRID.IPSearch.Data.Items[0].HashID);
             }
 
             Console.WriteLine(@"Scoring PaloAlto/ThreatGRID detector IP information.");

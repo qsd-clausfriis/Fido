@@ -134,6 +134,7 @@
     <Compile Include="Director\Director_Helper\The_Director_ThreatFeeds_Hash.cs" />
     <Compile Include="Director\Director_Helper\The_Director_ThreatFeeds_URL.cs" />
     <Compile Include="Director\SysMgmt\SysMgmt_CarbonBlack.cs" />
+    <Compile Include="Director\Threat_Feeds\Feeds_ReportHTML.cs" />
     <Compile Include="Fido_Support\Objects\Carbon_Black\Object_CarbonBlack_Alert_Class.cs" />
     <Compile Include="Fido_Support\Objects\Carbon_Black\Object_CarbonBlack_Inventory_Class.cs" />
     <Compile Include="Fido_Support\Objects\Cyphort\Object_Cyphort_Class.cs" />
